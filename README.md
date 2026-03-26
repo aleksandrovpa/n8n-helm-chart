@@ -805,6 +805,43 @@ Key changes include:
 - Updated deployment configurations
 - New Redis integration requirements
 
+## StatefulSet Support
+
+The chart supports `StatefulSet` mode for the `main` and `worker` components.
+This is useful when you need stable pod identities and a dedicated persistent volume per replica.
+
+### Main component
+
+```yaml
+main:
+  statefulSet:
+    enabled: true
+  replicaCount: 1
+  persistence:
+    enabled: true
+    type: dynamic
+```
+
+### Worker component
+
+```yaml
+worker:
+  enabled: true
+  statefulSet:
+    enabled: true
+  replicaCount: 2
+  persistence:
+    enabled: true
+    type: dynamic
+```
+
+### Validation and storage behavior
+
+- `Deployment` mode with persistent storage keeps `main.replicaCount=1` validation in place.
+- `webhook` with persistent storage keeps `webhook.replicaCount=1` validation in place.
+- Separate PVC handling is used for `main`, `worker`, and `webhook` resources to avoid claim-name collisions.
+- `StatefulSet` mode uses `volumeClaimTemplates`, so each replica gets its own volume instead of sharing a single PVC.
+
 
 ## Scaling and Advanced Configuration Options
 
@@ -847,4 +884,3 @@ At last scaling option is it possible to create dedicated webhook instances,
 which only process the webhooks.
 If you set `scaling.webhook.enabled=true`, then webhook processing on the main
 instance is disabled and by default a single webhook instance is started.
-

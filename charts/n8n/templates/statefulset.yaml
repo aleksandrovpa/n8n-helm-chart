@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "n8n.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "n8n.labels" . | nindent 4 }}
     {{- if .Values.main.deploymentLabels }}
@@ -77,7 +78,7 @@ spec:
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ get (default (dict) .Values.main.config) "port" | default 5678 }}
+              containerPort: {{ get (default (dict) .Values.main.config.n8n) "port" | default (get (default (dict) .Values.main.config) "port") | default 5678 }}
               protocol: TCP
           {{- with .Values.main.livenessProbe }}
           livenessProbe:
@@ -112,6 +113,9 @@ spec:
       {{- with .Values.main.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if hasKey .Values.main "terminationGracePeriodSeconds" }}
+      terminationGracePeriodSeconds: {{ .Values.main.terminationGracePeriodSeconds }}
       {{- end }}
   {{- if .Values.main.persistence.enabled }}
   volumeClaimTemplates:
