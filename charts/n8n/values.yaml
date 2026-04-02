@@ -395,6 +395,10 @@ worker:
   # run additional preparation steps (e.g., installing additional software)
   command: []
 
+  extraVolumes: []
+
+  extraVolumeMounts: []
+
   # Additional sidecar containers for worker pods
   extraContainers: []
 

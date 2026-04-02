@@ -132,6 +132,10 @@ spec:
       {{- if hasKey .Values.worker "terminationGracePeriodSeconds" }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       {{- end }}
+      {{- if .Values.worker.extraVolumes }}
+      volumes:
+        {{- toYaml .Values.worker.extraVolumes | nindent 8 }}
+      {{- end }}
   {{- if .Values.worker.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
