@@ -395,6 +395,9 @@ worker:
   # run additional preparation steps (e.g., installing additional software)
   command: []
 
+  # Additional sidecar containers for worker pods
+  extraContainers: []
+
   # sample configuration that overrides starting script and solves above issue (also it runs n8n as root, so be careful):
   # command:
   #  - tini
